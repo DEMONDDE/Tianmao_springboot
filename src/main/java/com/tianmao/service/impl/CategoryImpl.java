@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.management.Query;
 import java.util.List;
 
 /**
@@ -26,5 +27,25 @@ public class CategoryImpl implements CategoryService {
         Page<Category> page = new Page<>(start,size);
         IPage<Category> categoryIPage = categoryMapper.selectPage(page,null);
         return new PageNavigator<Category>(categoryIPage,navigatePages);
+    }
+
+    @Override
+    public void add(Category bean) {
+        categoryMapper.insert(bean);
+    }
+
+    @Override
+    public void deleteById(int id) {
+        categoryMapper.deleteById(id);
+    }
+
+    @Override
+    public Category get(int id) {
+        return categoryMapper.selectById(id);
+    }
+
+    @Override
+    public void edit(Category bean) {
+        categoryMapper.updateById(bean);
     }
 }
