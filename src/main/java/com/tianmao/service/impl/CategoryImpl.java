@@ -1,5 +1,6 @@
 package com.tianmao.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tianmao.domain.PageNavigator;
@@ -24,8 +25,10 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public PageNavigator<Category> list(int start, int size, int navigatePages) {
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByAsc("id");
         Page<Category> page = new Page<>(start,size);
-        IPage<Category> categoryIPage = categoryMapper.selectPage(page,null);
+        IPage<Category> categoryIPage = categoryMapper.selectPage(page,queryWrapper);
         return new PageNavigator<Category>(categoryIPage,navigatePages);
     }
 

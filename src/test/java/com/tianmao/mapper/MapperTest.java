@@ -2,6 +2,7 @@ package com.tianmao.mapper;
 
 import com.tianmao.mapper.CategoryMapper;
 import com.tianmao.pojo.Category;
+import com.tianmao.pojo.Property;
 import lombok.val;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,16 +10,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MapperTest {
-    @Autowired
+    @Resource
     private CategoryMapper categoryMapper;
+
+    @Resource
+    private ProperyMapper properyMapper;
     @Test
     public void CategoryTest(){
         List<Category> categoryList = categoryMapper.selectList(null);
         System.out.println(categoryList.toString());
+    }
+
+    @Test
+    public void PropertyMapperTest(){
+        Property property = properyMapper.get(21);
+        System.out.println(property.toString());
+        System.out.println(property.getCategory().toString());
     }
 }
