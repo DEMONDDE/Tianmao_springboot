@@ -3,10 +3,7 @@ package com.tianmao.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tianmao.pojo.Category;
 import com.tianmao.pojo.Property;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -23,4 +20,7 @@ public interface ProperyMapper extends BaseMapper<Property> {
             @Result(column = "cname",property = "category.name")
     })
     Property get(int id);
+
+    @Insert("insert into property(id,cid,name) values(SEQ_PROPERTY.NEXTVAL,#{category.id},#{name})")
+    void add(Property bean);
 }

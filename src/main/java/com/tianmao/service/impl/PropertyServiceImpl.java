@@ -33,4 +33,21 @@ public class PropertyServiceImpl implements PropertyService {
     public Property get(int id) {
         return properyMapper.get(id);
     }
+
+    @Override
+    public void add(Property bean) {
+         properyMapper.add(bean);
+    }
+
+    @Override
+    public void delete(int id) {
+        QueryWrapper<Property> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id);
+        properyMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public void update(Property property) {
+        properyMapper.updateById(property);
+    }
 }

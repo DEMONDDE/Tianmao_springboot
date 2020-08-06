@@ -29,8 +29,16 @@ public class MapperTest {
 
     @Test
     public void PropertyMapperTest(){
-        Property property = properyMapper.get(21);
-        System.out.println(property.toString());
-        System.out.println(property.getCategory().toString());
+//        Property property = properyMapper.get(21);
+//        System.out.println(property.toString());
+//        System.out.println(property.getCategory().toString());
+
+        Property property = new Property();
+        property.setName("test");
+        property.setCategory(new Category());
+        property.getCategory().setId(82);
+        properyMapper.add(property);
+
+
     }
 }

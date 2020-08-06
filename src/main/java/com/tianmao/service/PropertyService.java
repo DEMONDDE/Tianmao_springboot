@@ -25,4 +25,23 @@ public interface PropertyService {
      * @return
      */
     Property get(int id);
+
+    /**
+     * 添加
+     * @param bean
+     * @return
+     */
+    void add(Property bean);
+
+    /**
+     * 删除
+     * @param id
+     */
+    void delete(int id);
+
+    /**
+     * 更新
+     * @param property
+     */
+    void update(Property property);
 }
