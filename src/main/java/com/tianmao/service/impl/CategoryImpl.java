@@ -9,6 +9,7 @@ import com.tianmao.pojo.Category;
 import com.tianmao.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.management.Query;
@@ -18,6 +19,7 @@ import java.util.List;
  * @author 胡建德
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class CategoryImpl implements CategoryService {
 
     @Resource

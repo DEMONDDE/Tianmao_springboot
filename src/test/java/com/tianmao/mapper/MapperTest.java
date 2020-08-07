@@ -2,6 +2,7 @@ package com.tianmao.mapper;
 
 import com.tianmao.mapper.CategoryMapper;
 import com.tianmao.pojo.Category;
+import com.tianmao.pojo.Product;
 import com.tianmao.pojo.Property;
 import lombok.val;
 import org.junit.Test;
@@ -21,6 +22,9 @@ public class MapperTest {
 
     @Resource
     private ProperyMapper properyMapper;
+
+    @Resource
+    private ProductMapper productMapper;
     @Test
     public void CategoryTest(){
         List<Category> categoryList = categoryMapper.selectList(null);
@@ -38,7 +42,11 @@ public class MapperTest {
         property.setCategory(new Category());
         property.getCategory().setId(82);
         properyMapper.add(property);
+    }
 
-
+    @Test
+    public void productMapperTest(){
+        Product product = productMapper.selectById("87");
+        System.out.println(product);
     }
 }

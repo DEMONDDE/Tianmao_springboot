@@ -8,6 +8,7 @@ import com.tianmao.mapper.ProperyMapper;
 import com.tianmao.pojo.Property;
 import com.tianmao.service.PropertyService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
  * @author 胡建德
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class PropertyServiceImpl implements PropertyService {
 
     @Resource

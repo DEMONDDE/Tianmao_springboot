@@ -40,6 +40,7 @@ public class PropertyController {
     @DeleteMapping("/properties/{id}")
     public String delete(@PathVariable("id") int id){
         propertyService.delete(id);
+
         return null;
     }
 
