@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tianmao.domain.PageNavigator;
 import com.tianmao.mapper.ProperyMapper;
+import com.tianmao.pojo.Category;
 import com.tianmao.pojo.Property;
 import com.tianmao.service.PropertyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author 胡建德
@@ -30,6 +32,8 @@ public class PropertyServiceImpl implements PropertyService {
         IPage<Property> propertyIPage = properyMapper.selectPage(page,queryWrapper);
         return new PageNavigator<Property>(propertyIPage,i);
     }
+
+
 
     @Override
     public Property get(int id) {
@@ -51,5 +55,12 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public void update(Property property) {
         properyMapper.updateById(property);
+    }
+
+    @Override
+    public List<Property> listByCategory(Category category) {
+        QueryWrapper<Property> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("cid", category.getId());
+        return properyMapper.selectList(queryWrapper);
     }
 }

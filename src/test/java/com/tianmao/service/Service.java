@@ -2,7 +2,11 @@ package com.tianmao.service;
 
 import com.tianmao.domain.PageNavigator;
 import com.tianmao.pojo.Category;
+import com.tianmao.pojo.Product;
 import com.tianmao.pojo.Property;
+import com.tianmao.pojo.PropertyValue;
+import com.tianmao.service.impl.PropertyServiceImpl;
+import com.tianmao.service.impl.PropetyValueServiceImpl;
 import lombok.val;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +23,12 @@ public class Service {
 
     @Autowired PropertyService propertyService;
 
+    @Autowired
+    private PropetyValueServiceImpl propetyValueService;
+
+    @Autowired
+    private ProductService productService;
+
     @Test
     public void listTest(){
         PageNavigator<Category> list1 = categoryService.list(1, 5, 5);
@@ -32,6 +42,12 @@ public class Service {
     @Test
     public void Plist(){
         PageNavigator<Property> list = propertyService.list(81, 1, 5, 5);
-        System.out.println(list.getContent());
+        //System.out.println(list.getContent());
+    }
+
+    @Test
+    public void pvTest(){
+        Product product = productService.get(958);
+        propetyValueService.init(product);
     }
 }

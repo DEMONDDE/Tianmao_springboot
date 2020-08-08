@@ -1,7 +1,10 @@
 package com.tianmao.service;
 
 import com.tianmao.domain.PageNavigator;
+import com.tianmao.pojo.Category;
 import com.tianmao.pojo.Property;
+
+import java.util.List;
 
 /**
  * @author 胡建德
@@ -44,4 +47,6 @@ public interface PropertyService {
      * @param property
      */
     void update(Property property);
+
+    List<Property> listByCategory(Category category);
 }
