@@ -1,7 +1,9 @@
 package com.tianmao.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tianmao.domain.PageNavigator;
+import com.tianmao.mapper.PropetyValueMapper;
 import com.tianmao.pojo.Product;
 import com.tianmao.pojo.PropertyValue;
 import com.tianmao.service.ProductService;
@@ -21,6 +23,9 @@ public class PropertyValueController {
     private PropertyValueService propertyValueService;
 
     @Resource
+    private PropetyValueMapper propetyValueMapper;
+
+    @Resource
     private ProductService productService;
 
     @GetMapping("products/{pid}/propertyValues")
@@ -29,6 +34,7 @@ public class PropertyValueController {
         propertyValueService.init(product);
         return propertyValueService.list(id);
     }
+
 
     @PutMapping("/propertyValues")
     public PropertyValue update(@RequestBody PropertyValue bean) throws Exception {

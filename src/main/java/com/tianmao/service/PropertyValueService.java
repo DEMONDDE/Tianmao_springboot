@@ -12,6 +12,7 @@ public interface PropertyValueService {
 
     List<PropertyValue> list(int id);
 
+
     void init(Product product);
 
     void update(PropertyValue bean);
