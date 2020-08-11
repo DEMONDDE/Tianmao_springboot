@@ -25,6 +25,9 @@ public class MapperTest {
 
     @Resource
     private ProductMapper productMapper;
+
+    @Resource
+    private ProductImageMapper productImageMapper;
     @Test
     public void CategoryTest(){
         List<Category> categoryList = categoryMapper.selectList(null);
@@ -49,4 +52,6 @@ public class MapperTest {
         Product product = productMapper.selectById("87");
         System.out.println(product);
     }
+
+
 }
