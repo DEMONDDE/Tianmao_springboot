@@ -5,6 +5,7 @@ import lombok.Data;
 
 
 import java.sql.Date;
+import java.util.List;
 
 /**
  * @author 胡建德
@@ -28,4 +29,15 @@ public class Product {
         private int stock;
         @TableField(value = "createDate")
         private Date createDate;
+        @TableField(exist = false)
+        private ProductImage firstProductImage;
+        @TableField(exist = false)
+        private List<ProductImage> productSingleImages;
+        @TableField(exist = false)
+        private List<ProductImage> productDetailImages;
+        @TableField(exist = false)
+        private int reviewCount;
+        @TableField(exist = false)
+        private int saleCount;
+
 }

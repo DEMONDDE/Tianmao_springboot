@@ -2,6 +2,7 @@ package com.tianmao.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tianmao.mapper.ProductImageMapper;
+import com.tianmao.pojo.Product;
 import com.tianmao.pojo.ProductImage;
 import com.tianmao.service.ProductImageService;
 import com.tianmao.service.ProductService;
@@ -48,6 +49,30 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Override
     public void delete(String id) {
         productImageMapper.deleteById(id);
+    }
+
+    public List<ProductImage> listSingleProductImages(Product product) {
+        return productImageMapper.singleImage(product, type_single);
+    }
+    public List<ProductImage> listDetailProductImages(Product product) {
+        return productImageMapper.detailImage(product, type_detail);
+    }
+
+    @Override
+    public void setFirstProdutImage(Product product) {
+        List<ProductImage> singleImages = listSingleProductImages(product);
+        if(!singleImages.isEmpty()) {
+            product.setFirstProductImage(singleImages.get(0));
+        } else {
+            product.setFirstProductImage(new ProductImage());
+        }
+
+    }
+    @Override
+    public void setFirstProdutImages(List<Product> products) {
+        for (Product product : products) {
+            setFirstProdutImage(product);
+        }
     }
 
 

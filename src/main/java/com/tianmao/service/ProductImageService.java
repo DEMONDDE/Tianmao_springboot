@@ -1,5 +1,6 @@
 package com.tianmao.service;
 
+import com.tianmao.pojo.Product;
 import com.tianmao.pojo.ProductImage;
 
 import java.util.List;
@@ -21,4 +22,8 @@ public interface ProductImageService {
     ProductImage get(String id);
 
     void delete(String id);
+
+    void setFirstProdutImage(Product product);
+
+    void setFirstProdutImages(List<Product> products);
 }

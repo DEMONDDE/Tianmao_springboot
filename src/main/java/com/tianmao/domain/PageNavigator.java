@@ -72,7 +72,7 @@ public class PageNavigator<T> {
         HasPrevious();
     }
 
-    private void calcNavigatepageNums() {
+    public void calcNavigatepageNums() {
         int navigatepageNums[];
         int totalPages = getTotalPages();
         int num = getNumber();

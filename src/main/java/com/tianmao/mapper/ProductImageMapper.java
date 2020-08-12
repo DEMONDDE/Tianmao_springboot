@@ -1,6 +1,7 @@
 package com.tianmao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.tianmao.pojo.Product;
 import com.tianmao.pojo.ProductImage;
 import org.apache.ibatis.annotations.*;
 
@@ -17,4 +18,10 @@ public interface ProductImageMapper extends BaseMapper<ProductImage> {
 
     @Select("select SEQ_PRODUCTIMAGE.CURRVAL from dual")
     int getId();
+
+    @Select("select * from PRODUCTIMAGE where pid=#{product.id} and type = #{type_single}")
+    List<ProductImage> singleImage(@Param("product")Product product,@Param("type_single") String type_single);
+
+    @Select("select * from PRODUCTIMAGE where pid=#{product.id} and type = #{type_detail}")
+    List<ProductImage> detailImage(@Param("product")Product product,@Param("type_detail") String type_detail);
 }
