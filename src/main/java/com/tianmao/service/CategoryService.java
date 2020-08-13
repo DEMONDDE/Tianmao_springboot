@@ -20,6 +20,12 @@ public interface CategoryService {
    PageNavigator<Category> list(int start, int size, int navigatePages);
 
    /**
+    * 查询所有分类
+    * @return
+    */
+   List<Category> list();
+
+   /**
     * 添加
     * @param bean
     */

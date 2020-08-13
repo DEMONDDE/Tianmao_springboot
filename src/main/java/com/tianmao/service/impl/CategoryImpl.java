@@ -35,6 +35,11 @@ public class CategoryImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> list() {
+        return categoryMapper.selectList(null);
+    }
+
+    @Override
     public void add(Category bean) {
         categoryMapper.insert(bean);
     }

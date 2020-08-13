@@ -21,7 +21,7 @@ public class Product {
         private Category category;
         private String name;
         @TableField(value = "subTitle")
-        private String subTitle;
+        private String subTitle = "";
         @TableField(value = "originalPrice")
         private float originalPrice;
         @TableField(value = "promotePrice")

@@ -1,10 +1,9 @@
 package com.tianmao.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.KeySequence;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 物品类别表
@@ -20,4 +19,8 @@ public class Category {
 
     String name;
 
+    @TableField(exist = false)
+    List<Product> products;
+    @TableField(exist = false)
+    List<List<Product>> productsByRow;
 }
