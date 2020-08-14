@@ -26,4 +26,8 @@ public interface ProductImageService {
     void setFirstProdutImage(Product product);
 
     void setFirstProdutImages(List<Product> products);
+
+    List<ProductImage> getSingleImage(Product product);
+
+    List<ProductImage> getDetailImages(Product product);
 }

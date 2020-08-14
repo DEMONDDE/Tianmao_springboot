@@ -4,11 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tianmao.domain.PageNavigator;
+import com.tianmao.mapper.OrderItemMapper;
+import com.tianmao.mapper.OrderMapper;
 import com.tianmao.mapper.ProductMapper;
 import com.tianmao.pojo.Category;
+import com.tianmao.pojo.OrderItem;
 import com.tianmao.pojo.Product;
+import com.tianmao.service.OrderItemService;
 import com.tianmao.service.ProductImageService;
 import com.tianmao.service.ProductService;
+import com.tianmao.service.ReviewService;
 import oracle.sql.DATE;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +34,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Resource
     private ProductImageService productImageService;
+
+    @Resource
+    private ReviewService reviewService;
+
+    @Resource
+    private OrderItemService orderItemService;
     @Override
     public PageNavigator<Product> list(int start, int size, int num,int id) {
         Page<Product> page = new Page<>(start,size);
@@ -102,5 +113,11 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         return products;
+    }
+
+    @Override
+    public void setSaleAndReviewNumber(Product product) {
+        product.setSaleCount(orderItemService.countProductNum(product.getId()));
+        product.setReviewCount(reviewService.getcountByProductid(product.getId()));
     }
 }

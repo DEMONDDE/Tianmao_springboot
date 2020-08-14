@@ -75,5 +75,15 @@ public class ProductImageServiceImpl implements ProductImageService {
         }
     }
 
+    @Override
+    public List<ProductImage> getSingleImage(Product product) {
+        return productImageMapper.singleImage(product, type_single);
+    }
+
+    @Override
+    public List<ProductImage> getDetailImages(Product product) {
+        return productImageMapper.detailImage(product, type_detail);
+    }
+
 
 }

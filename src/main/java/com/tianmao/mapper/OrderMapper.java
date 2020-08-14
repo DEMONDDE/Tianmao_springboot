@@ -30,4 +30,5 @@ public interface OrderMapper extends BaseMapper<Order> {
             @Result(column = "id",property = "orderItems",many = @Many(select = "com.tianmao.mapper.OrderItemMapper.listItem"))
     })
     List<Order> list(int current, int size);
+
 }

@@ -8,7 +8,7 @@ import lombok.Data;
  */
 
 @Data
-@TableName("ORDER_")
+@TableName("ORDERITEM")
 @KeySequence("SEQ_ORDERITEM")
 public class OrderItem {
 

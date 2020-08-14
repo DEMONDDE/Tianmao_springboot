@@ -23,4 +23,10 @@ public interface OrderItemMapper extends BaseMapper<OrderItem> {
             @Result(column = "uname",property = "user.name"),
     })
     public List<OrderItem> listItem(int orderId);
+
+    @Select("select count(*) from ORDERITEM where pid = #{id}")
+    int countProductNum(int id);
+
+    @Select("select * from ORDERITEM where pid = #{id}")
+    List<OrderItem> listByProduct(int id);
 }

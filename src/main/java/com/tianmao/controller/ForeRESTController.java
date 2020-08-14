@@ -1,17 +1,15 @@
 package com.tianmao.controller;
 
-import com.tianmao.pojo.Category;
-import com.tianmao.pojo.Result;
-import com.tianmao.pojo.User;
-import com.tianmao.service.CategoryService;
-import com.tianmao.service.ProductService;
-import com.tianmao.service.UserService;
+import com.tianmao.pojo.*;
+import com.tianmao.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 胡建德
@@ -26,6 +24,15 @@ public class ForeRESTController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProductImageService productImageService;
+
+    @Autowired
+    private PropertyValueService propertyValueService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("/forehome")
     public List<Category> home(){
@@ -55,6 +62,22 @@ public class ForeRESTController {
         }
         session.setAttribute("user",user);
         return Result.success();
+    }
+
+    @GetMapping("foreproduct/{id}")
+    public Result getProduct(@PathVariable("id") int id){
+        Product product = productService.get(id);
+        product.setProductSingleImages(productImageService.getSingleImage(product));
+        product.setProductDetailImages(productImageService.getDetailImages(product));
+        List<PropertyValue> pvs = propertyValueService.list(product.getId());
+        List<Review> reviews = reviewService.list(product);
+        productService.setSaleAndReviewNumber(product);
+        productImageService.setFirstProdutImage(product);
+        Map<String,Object> map= new HashMap<>();
+        map.put("product", product);
+        map.put("pvs", pvs);
+        map.put("reviews", reviews);
+        return Result.success(map);
     }
 
 }
