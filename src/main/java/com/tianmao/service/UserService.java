@@ -9,4 +9,6 @@ public interface UserService {
     boolean isExist(String name);
 
     void add(User user);
+
+    User get(String name, String password);
 }

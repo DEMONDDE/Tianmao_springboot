@@ -26,16 +26,6 @@ public class UserController {
         return userService.list(start,size,5);
     }
 
-    @PostMapping("/foreregister")
-    public Result register(@RequestBody User user){
-        String name = user.getName();
-        name = HtmlUtils.htmlEscape(name);
-        if(userService.isExist(name)){
-            return Result.fail("用户名，已存在，清重新输入");
-        }
-        user.setName(name);
-        userService.add(user);
-        return Result.success();
-    }
+
 
 }

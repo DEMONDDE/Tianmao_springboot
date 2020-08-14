@@ -45,4 +45,12 @@ public class UserServiceImpl implements UserService {
     public void add(User user) {
         userMapper.insert(user);
     }
+
+    @Override
+    public User get(String name, String password) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name",name);
+        queryWrapper.eq("password",password);
+        return userMapper.selectOne(queryWrapper);
+    }
 }

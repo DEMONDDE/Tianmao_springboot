@@ -3,6 +3,8 @@ package com.tianmao.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * @author 胡建德
  */
@@ -74,7 +76,8 @@ public class ForePageController {
         return "fore/search";
     }
     @GetMapping("/forelogout")
-    public String logout( ) {
+    public String logout(HttpSession session) {
+        session.invalidate();
         return "redirect:home";
     }
 }
