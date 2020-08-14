@@ -2,11 +2,12 @@ package com.tianmao.controller;
 
 
 import com.tianmao.domain.PageNavigator;
+import com.tianmao.pojo.Result;
 import com.tianmao.pojo.User;
 import com.tianmao.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import oracle.jdbc.proxy.annotation.Post;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.annotation.Resource;
 
@@ -23,6 +24,18 @@ public class UserController {
     public PageNavigator<User> list(@RequestParam(defaultValue = "1")int start,@RequestParam(defaultValue = "5")int size){
         start = start < 1 ? 1:start;
         return userService.list(start,size,5);
+    }
+
+    @PostMapping("/foreregister")
+    public Result register(@RequestBody User user){
+        String name = user.getName();
+        name = HtmlUtils.htmlEscape(name);
+        if(userService.isExist(name)){
+            return Result.fail("用户名，已存在，清重新输入");
+        }
+        user.setName(name);
+        userService.add(user);
+        return Result.success();
     }
 
 }

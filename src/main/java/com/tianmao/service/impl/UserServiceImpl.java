@@ -29,4 +29,20 @@ public class UserServiceImpl implements UserService {
         IPage<User> Ipage = userMapper.selectPage(page, userQueryWrapper);
         return new PageNavigator<User>(Ipage,num);
     }
+
+    @Override
+    public boolean isExist(String name) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name",name);
+        User user = userMapper.selectOne(queryWrapper);
+        if(user == null){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void add(User user) {
+        userMapper.insert(user);
+    }
 }
