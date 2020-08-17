@@ -15,6 +15,7 @@ import com.tianmao.service.ProductImageService;
 import com.tianmao.service.ProductService;
 import com.tianmao.service.ReviewService;
 import oracle.sql.DATE;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,5 +120,20 @@ public class ProductServiceImpl implements ProductService {
     public void setSaleAndReviewNumber(Product product) {
         product.setSaleCount(orderItemService.countProductNum(product.getId()));
         product.setReviewCount(reviewService.getcountByProductid(product.getId()));
+    }
+
+    @Override
+    public void setSaleAndReviewNumber(List<Product> products) {
+        for(Product product:products){
+            setSaleAndReviewNumber(product);
+        }
+    }
+
+    @Override
+    public List<Product> search(String keyword, int start, int size) {
+        int end = start * size;
+        start = (start-1)*size;
+
+        return productMapper.search("",start,end);
     }
 }

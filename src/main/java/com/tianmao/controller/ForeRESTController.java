@@ -1,15 +1,15 @@
 package com.tianmao.controller;
 
+import com.tianmao.domain.*;
 import com.tianmao.pojo.*;
 import com.tianmao.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 胡建德
@@ -33,6 +33,7 @@ public class ForeRESTController {
 
     @Autowired
     private ReviewService reviewService;
+
 
     @GetMapping("/forehome")
     public List<Category> home(){
@@ -88,4 +89,46 @@ public class ForeRESTController {
         }
         return Result.fail("未登录");
     }
+
+    @GetMapping("forecategory/{cid}")
+    public Object searchForCategory(@PathVariable("cid")int cid,String sort) {
+        Category c = categoryService.get(cid);
+        productService.fill(c);
+        productService.setSaleAndReviewNumber(c.getProducts());
+        if (sort != null) {
+            switch (sort) {
+                case "review":
+                    Collections.sort(c.getProducts(), new ProductReviewComparator());
+                    break;
+                case "date":
+                    Collections.sort(c.getProducts(), new ProductDateComparator());
+                    break;
+
+                case "saleCount":
+                    Collections.sort(c.getProducts(), new ProductSaleCountComparator());
+                    break;
+
+                case "price":
+                    Collections.sort(c.getProducts(), new ProductPriceComparator());
+                    break;
+
+                case "all":
+                    Collections.sort(c.getProducts(), new ProductAllComparator());
+                    break;
+            }
+
+        }
+        return c;
     }
+
+    @PostMapping("foresearch")
+    public Object searchByname(String keyword){
+        if(keyword == null){
+            keyword = "";
+        }
+        List<Product> ps= productService.search(keyword,1,20);
+        productImageService.setFirstProdutImages(ps);
+        productService.setSaleAndReviewNumber(ps);
+        return ps;
+    }
+}

@@ -29,4 +29,8 @@ public interface ProductService {
     List<Product> listByCategory(Category category);
 
     void setSaleAndReviewNumber(Product product);
+
+    void setSaleAndReviewNumber(List<Product> products);
+
+    List<Product> search(String keyword, int start, int size);
 }

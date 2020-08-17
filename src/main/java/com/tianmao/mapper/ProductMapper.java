@@ -2,10 +2,9 @@ package com.tianmao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tianmao.pojo.Product;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * @author 胡建德
@@ -28,4 +27,7 @@ public interface ProductMapper extends BaseMapper<Product> {
             @Result(column = "cname",property = "category.name")
     })
     Product get(int id);
+
+    @Select(" select * from( select rownum rn, p.* from(select * from PRODUCT where name like '%'||#{keyword}||'%') p where rownum <= #{end})where rn > #{start}")
+    List<Product> search(@Param("keyword") String keyword,@Param("start") int start,@Param("end") int end);
 }
