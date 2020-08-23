@@ -1,14 +1,13 @@
 package com.tianmao.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tianmao.mapper.OrderItemMapper;
 import com.tianmao.pojo.OrderItem;
+import com.tianmao.pojo.User;
 import com.tianmao.service.OrderItemService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,5 +27,20 @@ public class OrderItemServiceImpl implements OrderItemService {
             count += orderItem.getNumber();
         }
         return count;
+    }
+
+    @Override
+    public List<OrderItem> listByUser(User user) {
+        return orderItemMapper.findByUserAndOrderIsNull(user);
+    }
+
+    @Override
+    public int update(OrderItem oi) {
+        return orderItemMapper.updateById(oi);
+    }
+
+    @Override
+    public void add(OrderItem oi) {
+        orderItemMapper.add(oi);
     }
 }
