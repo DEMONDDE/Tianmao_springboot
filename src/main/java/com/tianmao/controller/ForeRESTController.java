@@ -1,5 +1,6 @@
 package com.tianmao.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
 import com.tianmao.domain.*;
 import com.tianmao.pojo.*;
 import com.tianmao.service.*;
@@ -167,6 +168,25 @@ public class ForeRESTController {
         }
         return oiid;
     }
+    @GetMapping("forebuy")
+    public Object buy(String[] oiid,HttpSession session){
+        List<OrderItem> orderItems = new ArrayList<>();
+        float total = 0;
+        for(String oid : oiid){
+            int id = Integer.parseInt(oid);
+            OrderItem orderItem = orderItemService.get(id);
+            total += orderItem.getNumber()*orderItem.getProduct().getPromotePrice();
+            orderItems.add(orderItem);
+        }
+        productImageService.setFirstProdutImagesOnOrderItems(orderItems);
+        session.setAttribute("ois", orderItems);
+        Map<String ,Object> result = new HashMap<>();
+        result.put("total",total);
+        result.put("orderItems",orderItems);
+        return Result.success(result);
+    }
+
+
 
 
 

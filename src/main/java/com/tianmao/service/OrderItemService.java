@@ -15,4 +15,6 @@ public interface OrderItemService {
     int update(OrderItem oi);
 
     void add(OrderItem oi);
+
+    OrderItem get(int oid);
 }

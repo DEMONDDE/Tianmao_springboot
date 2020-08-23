@@ -1,5 +1,6 @@
 package com.tianmao.service;
 
+import com.tianmao.pojo.OrderItem;
 import com.tianmao.pojo.Product;
 import com.tianmao.pojo.ProductImage;
 
@@ -30,4 +31,6 @@ public interface ProductImageService {
     List<ProductImage> getSingleImage(Product product);
 
     List<ProductImage> getDetailImages(Product product);
+
+    public void setFirstProdutImagesOnOrderItems(List<OrderItem> ois);
 }

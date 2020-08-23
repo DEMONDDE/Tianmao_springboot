@@ -20,5 +20,6 @@ public class OrderItem {
     private Order order;
     @TableField(exist = false)
     private User user;
+    @TableField(value = "num")
     private int number;
 }

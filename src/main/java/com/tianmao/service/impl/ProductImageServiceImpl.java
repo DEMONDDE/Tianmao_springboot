@@ -2,6 +2,7 @@ package com.tianmao.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tianmao.mapper.ProductImageMapper;
+import com.tianmao.pojo.OrderItem;
 import com.tianmao.pojo.Product;
 import com.tianmao.pojo.ProductImage;
 import com.tianmao.service.ProductImageService;
@@ -83,6 +84,13 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Override
     public List<ProductImage> getDetailImages(Product product) {
         return productImageMapper.detailImage(product, type_detail);
+    }
+
+    @Override
+    public void setFirstProdutImagesOnOrderItems(List<OrderItem> ois) {
+        for (OrderItem orderItem : ois) {
+            setFirstProdutImage(orderItem.getProduct());
+        }
     }
 
 

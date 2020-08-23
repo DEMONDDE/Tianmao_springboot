@@ -43,4 +43,9 @@ public class OrderItemServiceImpl implements OrderItemService {
     public void add(OrderItem oi) {
         orderItemMapper.add(oi);
     }
+
+    @Override
+    public OrderItem get(int oid) {
+        return orderItemMapper.get(oid);
+    }
 }
