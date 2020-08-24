@@ -17,4 +17,6 @@ public interface OrderItemService {
     void add(OrderItem oi);
 
     OrderItem get(int oid);
+
+    void delte(int oiid);
 }

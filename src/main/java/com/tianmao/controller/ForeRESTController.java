@@ -204,5 +204,27 @@ public class ForeRESTController {
         productImageService.setFirstProdutImagesOnOrderItems(ois);
         return ois;
     }
-
+    public Object changeOrderItem( HttpSession session, int pid, int num){
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            return Result.fail("未登录");
+        }
+        List<OrderItem> orderItems = orderItemService.listByUser(user);
+        for(OrderItem oi : orderItems){
+            if(oi.getProduct().getId() == pid){
+                oi.setNumber(num);
+                break;
+            }
+        }
+        return Result.success();
+    }
+    @GetMapping("foredeleteOrderItem")
+    public Object deleteOrderItem(HttpSession session,int oiid){
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            return Result.fail("未登录");
+        }
+        orderItemService.delte(oiid);
+        return Result.success();
+    }
 }
