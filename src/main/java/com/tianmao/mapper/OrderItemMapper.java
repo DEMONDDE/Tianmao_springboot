@@ -29,14 +29,16 @@ public interface OrderItemMapper extends BaseMapper<OrderItem> {
     @Select("select * from ORDERITEM where pid = #{id}")
     List<OrderItem> listByProduct(int id);
 
-    @Select("select oi.*,p.name as pname, u.name as uname from ORDERITEM oi, PRODUCT p, USER_ u where u.id = #{id} and oi.pid = p.id and oi.userid = u.id and oi.ORDERID is null")
+    @Select("select oi.*,p.name as pname, p.ORIGINALPRICE as originalPrice,p.promotePrice as promotePrice, u.name as uname from ORDERITEM oi, PRODUCT p, USER_ u where u.id = #{id} and oi.pid = p.id and oi.userid = u.id and oi.ORDERID is null")
     @Results({
             @Result(id = true,column = "id",property = "id"),
             @Result(column = "num",property = "number"),
             @Result(column = "pid",property = "product.id"),
             @Result(column = "userid",property = "user.id"),
             @Result(column = "pname",property = "product.name"),
-            @Result(column = "uname",property = "user.name"),
+            @Result(column = "originalPrice",property = "product.originalPrice"),
+            @Result(column = "promotePrice",property = "product.promotePrice"),
+            @Result(column = "uname",property = "user.name")
     })
     List<OrderItem> findByUserAndOrderIsNull(User user);
 
