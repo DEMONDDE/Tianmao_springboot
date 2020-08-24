@@ -192,5 +192,17 @@ public class ForeRESTController {
         return Result.success();
     }
 
+    /**
+     * 根据用户获取购物车信息
+     * @param session
+     * @return
+     */
+    @GetMapping("forecart")
+    public Object cart(HttpSession session) {
+        User user =(User)  session.getAttribute("user");
+        List<OrderItem> ois = orderItemService.listByUser(user);
+        productImageService.setFirstProdutImagesOnOrderItems(ois);
+        return ois;
+    }
 
 }
