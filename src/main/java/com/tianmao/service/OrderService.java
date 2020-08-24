@@ -2,6 +2,9 @@ package com.tianmao.service;
 
 import com.tianmao.domain.PageNavigator;
 import com.tianmao.pojo.Order;
+import com.tianmao.pojo.OrderItem;
+
+import java.util.List;
 
 /**
  * @author 胡建德
@@ -20,4 +23,13 @@ public interface OrderService {
     PageNavigator list(int start, int size, int num);
 
     void update(Order order);
+
+    /**
+     * 添加order,并且更新orderitem的order id
+     * @param order
+     * @param ois
+     * @return
+     */
+    public float add(Order order, List<OrderItem> ois);
+
 }

@@ -11,31 +11,35 @@ import java.util.List;
  * @author 胡建德
  */
 @Data
-@TableName("ORDERITEM")
+@TableName("ORDER_")
 @KeySequence("SEQ_ORDERITEM")
 public class Order {
     @TableId(type = IdType.INPUT)
     private int id;
     @TableField(exist = false)
     private User user;
+    @TableField(value = "ordercode")
     private String orderCode;
     private String address;
     private String post;
     private String receiver;
     private String mobile;
+    @TableField("usermessage")
     private String userMessage;
+    @TableField("createdate")
     private Date createDate;
     private Date payDate;
     private Date deliveryDate;
     private Date confirmDate;
     private String status;
 
+    @TableField(exist = false)
     private List<OrderItem> orderItems;
-
+    @TableField(exist = false)
     private float total;
-
+    @TableField(exist = false)
     private int totalNumber;
-
+    @TableField(exist = false)
     private String statusDesc;
 
     public String getStatusDesc(){

@@ -1,7 +1,9 @@
 package com.tianmao.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tianmao.domain.PageNavigator;
+import com.tianmao.mapper.OrderItemMapper;
 import com.tianmao.mapper.OrderMapper;
 import com.tianmao.pojo.Order;
 import com.tianmao.pojo.OrderItem;
@@ -11,6 +13,7 @@ import com.tianmao.service.ProductImageService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.management.Query;
 import java.util.List;
 
 /**
@@ -21,6 +24,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Resource
     private OrderMapper orderMapper;
+
+    @Resource
+    private OrderItemMapper orderItemMapper;
 
     @Resource
     private ProductImageService productImageService;
@@ -82,5 +88,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void update(Order order) {
         orderMapper.updateById(order);
+    }
+
+    @Override
+    public float add(Order order, List<OrderItem> ois) {
+        float total = 0;
+        orderMapper.insert(order);
+        //由于mybatisplus是单表操作所以另外插入user的id
+        orderMapper.updateUserId(order);
+        //由于插入数据id和获取的id不一致所以设置
+        order.setId(order.getId()-10);
+        for(OrderItem oi : ois){
+            oi.setOrder(order);
+            total += oi.getNumber()*oi.getProduct().getPromotePrice();
+            orderItemMapper.updateOrderId(oi);
+        }
+        return total;
     }
 }

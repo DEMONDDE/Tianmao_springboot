@@ -57,4 +57,7 @@ public interface OrderItemMapper extends BaseMapper<OrderItem> {
             @Result(column = "uname",property = "user.name"),
     })
     OrderItem get(int id);
+
+    @Update("update ORDERITEM set ORDERID = #{order.id} where id = #{id}")
+    void updateOrderId(OrderItem oi);
 }

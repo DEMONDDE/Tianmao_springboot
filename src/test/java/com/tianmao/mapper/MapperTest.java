@@ -69,5 +69,13 @@ public class MapperTest {
         System.out.println(orderItems.toString());
     }
 
+    @Test
+    public void updateTest(){
+        OrderItem orderItem = orderItemMapper.get(5);
+        orderItem.setOrder(new Order());
+        orderItem.getOrder().setId(100);
+        orderItemMapper.updateOrderId(orderItem);
+    }
+
 
 }

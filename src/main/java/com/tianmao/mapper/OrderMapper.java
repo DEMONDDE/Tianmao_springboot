@@ -31,4 +31,10 @@ public interface OrderMapper extends BaseMapper<Order> {
     })
     List<Order> list(int current, int size);
 
+    /**
+     * 更新order的user id
+     * @param order
+     */
+    @Update("update ORDER_ set userid = #{user.id} where id = #{id}")
+    void updateUserId(Order order);
 }

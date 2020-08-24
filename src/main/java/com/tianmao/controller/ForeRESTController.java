@@ -4,12 +4,15 @@ import com.sun.org.apache.xpath.internal.operations.Or;
 import com.tianmao.domain.*;
 import com.tianmao.pojo.*;
 import com.tianmao.service.*;
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -37,6 +40,9 @@ public class ForeRESTController {
 
     @Autowired
     private OrderItemService orderItemService;
+
+    @Autowired
+    private OrderService orderService;
 
 
     @GetMapping("/forehome")
@@ -204,6 +210,7 @@ public class ForeRESTController {
         productImageService.setFirstProdutImagesOnOrderItems(ois);
         return ois;
     }
+
     public Object changeOrderItem( HttpSession session, int pid, int num){
         User user = (User) session.getAttribute("user");
         if(user == null){
@@ -218,6 +225,8 @@ public class ForeRESTController {
         }
         return Result.success();
     }
+
+
     @GetMapping("foredeleteOrderItem")
     public Object deleteOrderItem(HttpSession session,int oiid){
         User user = (User) session.getAttribute("user");
@@ -226,5 +235,28 @@ public class ForeRESTController {
         }
         orderItemService.delte(oiid);
         return Result.success();
+    }
+
+    /**
+     * 创建订单
+     * @param order
+     * @param session
+     * @return
+     */
+    @PostMapping("forecreateOrder")
+    public Object createOrder(@RequestBody Order order,HttpSession session){
+        User user = (User) session.getAttribute("user");
+        String orderCode = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date(System.currentTimeMillis())) + RandomUtils.nextInt(10000);
+        order.setUser(user);
+        order.setCreateDate(new Date(System.currentTimeMillis()));
+        order.setOrderCode(orderCode);
+        order.setStatus(OrderService.waitPay);
+        order.getStatusDesc();
+        List<OrderItem> orderItems = orderItemService.listByUser(user);
+        float total = orderService.add(order, orderItems);
+        Map<String,Object> map = new HashMap<>();
+        map.put("oid", order.getId());
+        map.put("total", total);
+        return Result.success(map);
     }
 }
