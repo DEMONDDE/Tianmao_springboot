@@ -26,6 +26,4 @@ public class UserController {
         return userService.list(start,size,5);
     }
 
-
-
 }

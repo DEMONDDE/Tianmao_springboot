@@ -145,7 +145,6 @@ public class ForeRESTController {
         Product product = productService.get(pid);
         int oiid = 0;
         User user =(User)  session.getAttribute("user");
-
         boolean found = false;
         List<OrderItem> ois = orderItemService.listByUser(user);
         for (OrderItem oi : ois) {
@@ -157,17 +156,17 @@ public class ForeRESTController {
                 break;
             }
         }
-
         if(!found){
             OrderItem oi = new OrderItem();
             oi.setUser(user);
             oi.setProduct(product);
             oi.setNumber(num);
             orderItemService.add(oi);
-            oiid = oi.getId();
+            oiid = oi.getId()-5;
         }
         return oiid;
     }
+
     @GetMapping("forebuy")
     public Object buy(String[] oiid,HttpSession session){
         List<OrderItem> orderItems = new ArrayList<>();
@@ -187,7 +186,11 @@ public class ForeRESTController {
     }
 
 
-
+    @GetMapping("foreaddCart")
+    public Object addCart(int pid, int num, HttpSession session) {
+        buyoneAndAddCart(pid,num,session);
+        return Result.success();
+    }
 
 
 }
