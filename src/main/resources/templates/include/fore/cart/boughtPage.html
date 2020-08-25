@@ -119,8 +119,8 @@
 							
 						</td>
 					</tr>
-					
-						<tr class="orderItemProductInfoPartTR" v-for="oi in o.orderItems" >
+
+						<tr class="orderItemProductInfoPartTR" v-for="oi,index in o.orderItems" >
 							<td class="orderItemProductInfoPartTD"><img width="80" height="80" :src="'img/productSingle_middle/'+oi.product.firstProductImage.id+'.jpg'"></td>
 							<td class="orderItemProductInfoPartTD">
 								<div class="orderListItemProductLinkOutDiv">
@@ -128,7 +128,7 @@
 									<div class="orderListItemProductLinkInnerDiv">
 												<img src="img/site/creditcard.png" title="支持信用卡支付">
 												<img src="img/site/7day.png" title="消费者保障服务,承诺7天退货">
-												<img src="img/site/promise.png" title="消费者保障服务,承诺如实描述">						
+												<img src="img/site/promise.png" title="消费者保障服务,承诺如实描述">
 									</div>
 								</div>
 							</td>
@@ -136,7 +136,7 @@
 								<div class="orderListItemProductOriginalPrice">￥{{oi.product.originalPrice|formatMoneyFilter}}</div>
 								<div class="orderListItemProductPrice">￥{{oi.product.promotePric|formatMoneyFilter}}</div>
 							</td>
-							<template v-if="index==0">							 
+							<template v-if="index==0">
 								<td valign="top" :rowspan="o.orderItems.length" class="orderListItemNumberTD orderItemOrderInfoPartTD" width="100px">
 									<span class="orderListItemNumber">{{o.totalNumber}}</span>
 								</td>
@@ -152,17 +152,17 @@
 
 										<a v-if="o.status=='waitPay'" :href="'alipay?oid='+o.id+'&total='+o.total">
 											<button class="orderListItemConfirm">付款</button>
-										</a>								
-									
+										</a>
+
 										<div  v-if="o.status=='waitDelivery'">
 											<span>待发货</span>
 										</div>
-	
+
 										<a v-if="o.status=='waitReview'" :href="'review?oid='+o.id">
 											<button  class="orderListItemReview">评价</button>
 										</a>
-								</td>	
-							</template>						
+								</td>
+							</template>
 						</tr>
 				</table>
 		</div>		

@@ -306,6 +306,9 @@ public class ForeRESTController {
     public Object bought(HttpSession session){
         User user = (User) session.getAttribute("user");
         List<Order> orders = orderService.listByUserWithoutDelete(user);
+        for(Order order : orders){
+            productImageService.setFirstProdutImagesOnOrderItems(order.getOrderItems());
+        }
         return orders;
     }
 
