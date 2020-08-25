@@ -12,4 +12,10 @@ public interface ReviewService {
     List<Review> list(Product product);
 
     int getcountByProductid(int id);
+
+    /**
+     * 添加评论
+     * @param review
+     */
+    void add(Review review);
 }

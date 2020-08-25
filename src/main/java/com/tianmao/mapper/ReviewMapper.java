@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tianmao.pojo.Product;
 import com.tianmao.pojo.Review;
 import com.tianmao.pojo.User;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -26,4 +23,12 @@ public interface ReviewMapper extends BaseMapper<Review> {
             @Result(column = "USERID",property = "user", javaType = User.class,one = @One(select = "com.tianmao.mapper.UserMapper.get"))
     })
     List<Review> list(int id);
+
+    /**
+     * 添加订单
+     * @param review
+     */
+    @SelectKey(before = true,keyProperty = "id",resultType = int.class,statement = "select SEQ_REVIEW.Nextval from dual")
+    @Insert("insert into REVIEW (id,content,userid,pid,createdate) values(#{id},#{content},#{user.id},{product.id},{createDate})")
+    void add(Review review);
 }

@@ -77,5 +77,19 @@ public class MapperTest {
         orderItemMapper.updateOrderId(orderItem);
     }
 
+    @Test
+    public void getIdTest(){
+        OrderItem orderItem = new OrderItem();
+        Product product = new Product();
+        product.setId(785);
+        User user = new User();
+        user.setId(7);
+        orderItem.setNumber(5);
+        orderItem.setProduct(product);
+        orderItem.setUser(user);
+        orderItemMapper.add(orderItem);
+        System.out.println(orderItem.getId());
+    }
+
 
 }

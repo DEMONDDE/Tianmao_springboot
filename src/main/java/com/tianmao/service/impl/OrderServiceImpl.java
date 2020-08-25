@@ -1,6 +1,7 @@
 package com.tianmao.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tianmao.domain.PageNavigator;
 import com.tianmao.mapper.OrderItemMapper;
@@ -8,9 +9,11 @@ import com.tianmao.mapper.OrderMapper;
 import com.tianmao.pojo.Order;
 import com.tianmao.pojo.OrderItem;
 import com.tianmao.pojo.Product;
+import com.tianmao.pojo.User;
 import com.tianmao.service.OrderService;
 import com.tianmao.service.ProductImageService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.management.Query;
@@ -20,6 +23,7 @@ import java.util.List;
  * @author 胡建德
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class OrderServiceImpl implements OrderService {
 
     @Resource
@@ -33,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order get(int id) {
-        return orderMapper.selectById(id);
+        return orderMapper.get(id);
     }
 
     @Override
@@ -93,16 +97,36 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public float add(Order order, List<OrderItem> ois) {
         float total = 0;
-        orderMapper.insert(order);
+        orderMapper.add(order);
         //由于mybatisplus是单表操作所以另外插入user的id
         orderMapper.updateUserId(order);
-        //由于插入数据id和获取的id不一致所以设置
-        order.setId(order.getId()-10);
         for(OrderItem oi : ois){
             oi.setOrder(order);
             total += oi.getNumber()*oi.getProduct().getPromotePrice();
             orderItemMapper.updateOrderId(oi);
         }
         return total;
+    }
+
+    @Override
+    public List<Order> listByUserWithoutDelete(User user) {
+        return orderMapper.findByUserAndStatusNotOrderByIdDesc(user,OrderService.delete);
+    }
+
+    @Override
+    public void cacl(Order o) {
+        List<OrderItem> orderItems = o.getOrderItems();
+        float total = 0;
+        for (OrderItem orderItem : orderItems) {
+            total+=orderItem.getProduct().getPromotePrice()*orderItem.getNumber();
+        }
+        o.setTotal(total);
+    }
+
+    @Override
+    public void updateUser(Order o) {
+        UpdateWrapper<Order> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",o.getId()).set("userid",o.getUser().getId());
+        orderMapper.update(null,updateWrapper);
     }
 }

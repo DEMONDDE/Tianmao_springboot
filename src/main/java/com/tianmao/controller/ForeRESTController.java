@@ -131,6 +131,11 @@ public class ForeRESTController {
         return c;
     }
 
+    /**
+     * 查询物品
+     * @param keyword
+     * @return
+     */
     @PostMapping("foresearch")
     public Object searchByname(String keyword){
         if(keyword == null){
@@ -142,11 +147,25 @@ public class ForeRESTController {
         return ps;
     }
 
+    /**
+     * 立即购买
+     * @param pid
+     * @param num
+     * @param session
+     * @return
+     */
     @GetMapping("forebuyone")
     public Object buyone(int pid, int num, HttpSession session) {
         return buyoneAndAddCart(pid,num,session);
     }
 
+    /**
+     * 购买一个物品并加入购物车
+     * @param pid
+     * @param num
+     * @param session
+     * @return
+     */
     private int buyoneAndAddCart(int pid, int num, HttpSession session){
         Product product = productService.get(pid);
         int oiid = 0;
@@ -168,7 +187,7 @@ public class ForeRESTController {
             oi.setProduct(product);
             oi.setNumber(num);
             orderItemService.add(oi);
-            oiid = oi.getId()-5;
+            oiid = oi.getId();
         }
         return oiid;
     }
@@ -191,7 +210,13 @@ public class ForeRESTController {
         return Result.success(result);
     }
 
-
+    /**
+     * 添加购物车
+     * @param pid
+     * @param num
+     * @param session
+     * @return
+     */
     @GetMapping("foreaddCart")
     public Object addCart(int pid, int num, HttpSession session) {
         buyoneAndAddCart(pid,num,session);
@@ -211,6 +236,13 @@ public class ForeRESTController {
         return ois;
     }
 
+    /**
+     * 更改物品数量
+     * @param session
+     * @param pid
+     * @param num
+     * @return
+     */
     public Object changeOrderItem( HttpSession session, int pid, int num){
         User user = (User) session.getAttribute("user");
         if(user == null){
@@ -226,7 +258,12 @@ public class ForeRESTController {
         return Result.success();
     }
 
-
+    /**
+     * 删除购物车物品
+     * @param session
+     * @param oiid
+     * @return
+     */
     @GetMapping("foredeleteOrderItem")
     public Object deleteOrderItem(HttpSession session,int oiid){
         User user = (User) session.getAttribute("user");
@@ -258,5 +295,115 @@ public class ForeRESTController {
         map.put("oid", order.getId());
         map.put("total", total);
         return Result.success(map);
+    }
+
+    /**
+     * 查询订单
+     * @param session
+     * @return
+     */
+    @GetMapping("forebought")
+    public Object bought(HttpSession session){
+        User user = (User) session.getAttribute("user");
+        List<Order> orders = orderService.listByUserWithoutDelete(user);
+        return orders;
+    }
+
+    /**
+     * 支付
+     * @param oid
+     * @return
+     */
+    @GetMapping("forepayed")
+    public Object payed(int oid) {
+        Order order = orderService.get(oid);
+        order.setStatus(OrderService.waitDelivery);
+        order.setPayDate(new Date(System.currentTimeMillis()));
+        orderService.update(order);
+        return order;
+    }
+
+    @GetMapping("foreconfirmPay")
+    public Object confirmPay(int oid) {
+        Order o = orderService.get(oid);
+        orderItemService.fill(o);
+        orderService.cacl(o);
+        return o;
+    }
+
+    /**
+     * 确认收货成功
+     * @param oid
+     * @return
+     */
+    @GetMapping("foreorderConfirmed")
+    public Object orderConfirmed( int oid) {
+        Order o = orderService.get(oid);
+        o.setStatus(OrderService.waitReview);
+        o.setConfirmDate(new Date(System.currentTimeMillis()));
+        orderService.update(o);
+        orderService.updateUser(o);
+        return Result.success();
+    }
+
+    /**
+     * 删除
+     * @param oid
+     * @return
+     */
+    @PutMapping("foredeleteOrder")
+    public Object deleteOrder(int oid){
+        Order o = orderService.get(oid);
+        o.setStatus(OrderService.delete);
+        orderService.update(o);
+        orderService.updateUser(o);
+        return Result.success();
+    }
+
+    /**
+     * 获取评价
+     * @param oid
+     * @return
+     */
+    @GetMapping("forereview")
+    public Object review(int oid) {
+        Order o = orderService.get(oid);
+        orderItemService.fill(o);
+        Product p = o.getOrderItems().get(0).getProduct();
+        List<Review> reviews = reviewService.list(p);
+        productService.setSaleAndReviewNumber(p);
+        Map<String,Object> map = new HashMap<>();
+        map.put("p", p);
+        map.put("o", o);
+        map.put("reviews", reviews);
+
+        return Result.success(map);
+    }
+
+    /**
+     * 提交评价
+     * @param session
+     * @param oid
+     * @param pid
+     * @param content
+     * @return
+     */
+    @PostMapping("foredoreview")
+    public Object doreview( HttpSession session,int oid,int pid,String content) {
+        Order o = orderService.get(oid);
+        o.setStatus(OrderService.finish);
+        orderService.update(o);
+
+        Product p = productService.get(pid);
+        content = HtmlUtils.htmlEscape(content);
+
+        User user =(User)  session.getAttribute("user");
+        Review review = new Review();
+        review.setContent(content);
+        review.setProduct(p);
+        review.setCreateDate(new Date(System.currentTimeMillis()));
+        review.setUser(user);
+        reviewService.add(review);
+        return Result.success();
     }
 }

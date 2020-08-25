@@ -31,4 +31,9 @@ public class ReviewServiceImpl implements ReviewService {
         queryWrapper.eq("pid",id);
         return reviewMapper.selectCount(queryWrapper);
     }
+
+    @Override
+    public void add(Review review) {
+        reviewMapper.add(review);
+    }
 }

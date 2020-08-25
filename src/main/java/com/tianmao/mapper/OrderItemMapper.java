@@ -42,9 +42,11 @@ public interface OrderItemMapper extends BaseMapper<OrderItem> {
     })
     List<OrderItem> findByUserAndOrderIsNull(User user);
 
-    @Insert("insert into ORDERITEM (id,num,pid,userid) values(SEQ_ORDERITEM.Currval,#{number},#{product.id},#{user.id})")
-    @SelectKey(keyProperty = "id",before = true,resultType = int.class,statement = "select SEQ_ORDERITEM.Nextval as id from dual")
+
+    @SelectKey(keyProperty = "id",before = true,resultType = int.class,statement = "select SEQ_ORDERITEM.nextval as id from dual")
+    @Insert("insert into ORDERITEM (id,num,pid,userid) values(#{id},#{number},#{product.id},#{user.id})")
     void add(OrderItem oi);
+
 
     @Select("select oi.*,p.name as pname,p.promoteprice as price, u.name as uname from ORDERITEM oi, PRODUCT p, USER_ u where oi.id = #{id} and oi.pid = p.id and oi.userid = u.id")
     @Results({
@@ -60,4 +62,20 @@ public interface OrderItemMapper extends BaseMapper<OrderItem> {
 
     @Update("update ORDERITEM set ORDERID = #{order.id} where id = #{id}")
     void updateOrderId(OrderItem oi);
+
+    /**
+     * 根据订单号获取orderitem
+     * @param id
+     */
+    @Select("select oi.*,p.name as pname,p.promoteprice as price, u.name as uname from ORDERITEM oi, PRODUCT p, USER_ u where oi.orderid = #{id} and oi.pid = p.id and oi.userid = u.id")
+    @Results({
+            @Result(id = true,column = "id",property = "id"),
+            @Result(column = "num",property = "number"),
+            @Result(column = "pid",property = "product.id"),
+            @Result(column = "price",property = "product.promotePrice"),
+            @Result(column = "userid",property = "user.id"),
+            @Result(column = "pname",property = "product.name"),
+            @Result(column = "uname",property = "user.name"),
+    })
+    List<OrderItem> getOrderItemByOrder(int id);
 }
