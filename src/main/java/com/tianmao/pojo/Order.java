@@ -28,8 +28,11 @@ public class Order {
     private String userMessage;
     @TableField("createdate")
     private Date createDate;
+    @TableField("paydate")
     private Date payDate;
+    @TableField("deliverydate")
     private Date deliveryDate;
+    @TableField("confirmdate")
     private Date confirmDate;
     private String status;
 

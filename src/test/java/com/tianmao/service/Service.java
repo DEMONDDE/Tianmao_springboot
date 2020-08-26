@@ -49,5 +49,9 @@ public class Service {
     public void pvTest(){
         Product product = productService.get(958);
         propetyValueService.init(product);
+        int b = 1;
+        for(int i = 0 ; i < 100;i++,b++){
+            
+        }
     }
 }

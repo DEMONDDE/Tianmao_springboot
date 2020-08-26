@@ -16,10 +16,8 @@ public interface OrderItemMapper extends BaseMapper<OrderItem> {
     @Results({
             @Result(id = true,column = "id",property = "id"),
             @Result(column = "num",property = "number"),
-            @Result(column = "pid",property = "product.id"),
-            @Result(column = "userid",property = "user.id"),
-            @Result(column = "pname",property = "product.name"),
-            @Result(column = "uname",property = "user.name"),
+            @Result(column = "pid",property = "product", one = @One(select ="com.tianmao.mapper.ProductMapper.get")),
+            @Result(column = "userid",property = "user",one = @One(select = "com.tianmao.mapper.UserMapper.getByid")),
     })
     List<OrderItem> listItem(int orderId);
 

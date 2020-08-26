@@ -308,7 +308,9 @@ public class ForeRESTController {
         List<Order> orders = orderService.listByUserWithoutDelete(user);
         for(Order order : orders){
             productImageService.setFirstProdutImagesOnOrderItems(order.getOrderItems());
+            orderService.cacl(order);
         }
+
         return orders;
     }
 

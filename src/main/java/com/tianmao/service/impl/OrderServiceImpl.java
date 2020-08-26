@@ -116,11 +116,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void cacl(Order o) {
         List<OrderItem> orderItems = o.getOrderItems();
+        int totalnum = 0;
         float total = 0;
         for (OrderItem orderItem : orderItems) {
             total+=orderItem.getProduct().getPromotePrice()*orderItem.getNumber();
+            totalnum+=orderItem.getNumber();
         }
         o.setTotal(total);
+        o.setTotalNumber(totalnum);
     }
 
     @Override
