@@ -2,6 +2,8 @@ package com.tianmao.config;
 
 import com.tianmao.pojo.User;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -48,8 +50,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         String page = uri;
 
         if(begingWith(page, requireAuthPages)){
-            User user = (User) session.getAttribute("user");
-            if(user==null) {
+            Subject subject = SecurityUtils.getSubject();
+            if(!subject.isAuthenticated()) {
                 httpServletResponse.sendRedirect("login");
                 return false;
             }

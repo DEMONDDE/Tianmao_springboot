@@ -5,6 +5,12 @@ import com.tianmao.domain.*;
 import com.tianmao.pojo.*;
 import com.tianmao.service.*;
 import org.apache.commons.lang.math.RandomUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
@@ -57,23 +63,39 @@ public class ForeRESTController {
     public Result register(@RequestBody User user){
         String name = user.getName();
         name = HtmlUtils.htmlEscape(name);
+        String password = user.getPassword();
         if(userService.isExist(name)){
             return Result.fail("用户名，已存在，清重新输入");
         }
+        String salt = new SecureRandomNumberGenerator().nextBytes().toString();
+        int times = 2;
+        String algorithmName = "md5";
+        user.setSalt(salt);
+        password = new SimpleHash(algorithmName,password,salt,times).toString();
         user.setName(name);
+        user.setPassword(password);
         userService.add(user);
         return Result.success();
     }
 
     @PostMapping("/forelogin")
     public Result login(@RequestBody User user, HttpSession session){
-        User getuser = userService.get(user.getName(),user.getPassword());
-        if(getuser == null){
-            return Result.fail("用户不存在");
+        String name = user.getName();
+        name = HtmlUtils.htmlEscape(name);
+        Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(name, user.getPassword());
+        try{
+            subject.login(usernamePasswordToken);
+            session.setAttribute("user",user);
+            return Result.success();
+        }catch (AuthenticationException a){
+            String mess = "账号或密码错误";
+            return Result.fail(mess);
+
         }
-        session.setAttribute("user",getuser);
-        return Result.success();
     }
+
+
 
     @GetMapping("foreproduct/{id}")
     public Result getProduct(@PathVariable("id") int id){
@@ -93,8 +115,8 @@ public class ForeRESTController {
 
     @GetMapping("forecheckLogin")
     public Object checkLogin( HttpSession session) {
-        User user =(User)  session.getAttribute("user");
-        if(null!=user) {
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isAuthenticated()) {
             return Result.success();
         }
         return Result.fail("未登录");
