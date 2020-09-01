@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Data
 @TableName("PRODUCT")
 @KeySequence(value = "seq_product")
-public class Product {
+public class Product implements Serializable {
 
         @TableId(type = IdType.INPUT)
         int id;

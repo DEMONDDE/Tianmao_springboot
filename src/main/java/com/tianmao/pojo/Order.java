@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.tianmao.service.OrderService;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Data
 @TableName("ORDER_")
 @KeySequence("SEQ_ORDERITEM")
-public class Order {
+public class Order implements Serializable {
     @TableId(type = IdType.INPUT)
     private int id;
     @TableField(exist = false)

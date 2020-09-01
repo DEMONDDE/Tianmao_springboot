@@ -7,6 +7,9 @@ import com.tianmao.pojo.Product;
 import com.tianmao.pojo.ProductImage;
 import com.tianmao.service.ProductImageService;
 import com.tianmao.service.ProductService;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +21,7 @@ import java.util.List;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
+@CacheConfig(cacheNames="productImages")
 public class ProductImageServiceImpl implements ProductImageService {
 
     @Resource
@@ -42,22 +46,27 @@ public class ProductImageServiceImpl implements ProductImageService {
         productImage.setId(productImageMapper.getId());
     }
 
+    @Cacheable(key="'productImages-one-'+ #p0")
     @Override
     public ProductImage get(String id) {
         return productImageMapper.selectById(id);
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void delete(String id) {
         productImageMapper.deleteById(id);
     }
 
+    @Cacheable(key="'productImages-single-pid-'+ #p0.id")
     public List<ProductImage> listSingleProductImages(Product product) {
         return productImageMapper.singleImage(product, type_single);
     }
+    @Cacheable(key="'productImages-detail-pid-'+ #p0.id")
     public List<ProductImage> listDetailProductImages(Product product) {
         return productImageMapper.detailImage(product, type_detail);
     }
+
 
     @Override
     public void setFirstProdutImage(Product product) {

@@ -12,6 +12,9 @@ import com.tianmao.pojo.Product;
 import com.tianmao.pojo.User;
 import com.tianmao.service.OrderService;
 import com.tianmao.service.ProductImageService;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,7 @@ import java.util.List;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
+@CacheConfig(cacheNames="orders")
 public class OrderServiceImpl implements OrderService {
 
     @Resource
@@ -40,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.get(id);
     }
 
+    @Cacheable(key="'orders-page-'+#p0+ '-' + #p1")
     @Override
     public PageNavigator list(int start, int size, int num) {
         int current = (start-1)*size;
@@ -89,11 +94,13 @@ public class OrderServiceImpl implements OrderService {
         return page;
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void update(Order order) {
         orderMapper.updateById(order);
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public float add(Order order, List<OrderItem> ois) {
         float total = 0;
@@ -108,6 +115,7 @@ public class OrderServiceImpl implements OrderService {
         return total;
     }
 
+    @Cacheable(key="'orders-uid-'+ #p0.id")
     @Override
     public List<Order> listByUserWithoutDelete(User user) {
         return orderMapper.findByUserAndStatusNotOrderByIdDesc(user,OrderService.delete);
@@ -126,6 +134,7 @@ public class OrderServiceImpl implements OrderService {
         o.setTotalNumber(totalnum);
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void updateUser(Order o) {
         UpdateWrapper<Order> updateWrapper = new UpdateWrapper<>();

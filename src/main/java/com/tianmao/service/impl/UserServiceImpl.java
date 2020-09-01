@@ -7,6 +7,9 @@ import com.tianmao.domain.PageNavigator;
 import com.tianmao.mapper.UserMapper;
 import com.tianmao.pojo.User;
 import com.tianmao.service.UserService;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +20,13 @@ import javax.annotation.Resource;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
+@CacheConfig(cacheNames="users")
 public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
+
+    @Cacheable(key="'users-page-'+#p0+ '-' + #p1")
     @Override
     public PageNavigator<User> list(int start, int size, int num) {
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
@@ -41,11 +47,13 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void add(User user) {
         userMapper.insert(user);
     }
 
+    @Cacheable(key="'users-one-name-'+ #p0 +'-password-'+ #p1")
     @Override
     public User get(String name, String password) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -54,6 +62,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectOne(queryWrapper);
     }
 
+    @Cacheable(key="'users-one-name-'+ #p0")
     @Override
     public User getByName(String userName) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();

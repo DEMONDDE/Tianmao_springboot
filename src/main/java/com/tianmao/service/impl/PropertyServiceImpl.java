@@ -8,6 +8,9 @@ import com.tianmao.mapper.ProperyMapper;
 import com.tianmao.pojo.Category;
 import com.tianmao.pojo.Property;
 import com.tianmao.service.PropertyService;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +22,13 @@ import java.util.List;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
+@CacheConfig(cacheNames="properties")
 public class PropertyServiceImpl implements PropertyService {
 
     @Resource
     private ProperyMapper properyMapper;
 
+    @Cacheable(key="'properties-cid-'+#p0+'-page-'+#p1 + '-' + #p2 ")
     @Override
     public PageNavigator<Property> list(int id, int start, int size, int i) {
         QueryWrapper<Property> queryWrapper = new QueryWrapper<>();
@@ -35,16 +40,19 @@ public class PropertyServiceImpl implements PropertyService {
 
 
 
+    @Cacheable(key="'properties-one-'+ #p0")
     @Override
     public Property get(int id) {
         return properyMapper.get(id);
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void add(Property bean) {
          properyMapper.add(bean);
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void delete(int id) {
         QueryWrapper<Property> queryWrapper = new QueryWrapper<>();
@@ -52,11 +60,13 @@ public class PropertyServiceImpl implements PropertyService {
         properyMapper.delete(queryWrapper);
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void update(Property property) {
         properyMapper.updateById(property);
     }
 
+    @Cacheable(key="'properties-cid-'+ #p0.id")
     @Override
     public List<Property> listByCategory(Category category) {
         QueryWrapper<Property> queryWrapper = new QueryWrapper<>();

@@ -3,6 +3,8 @@ package com.tianmao.pojo;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author 胡建德
  */
@@ -10,7 +12,7 @@ import lombok.Data;
 @Data
 @TableName("ORDERITEM")
 @KeySequence("SEQ_ORDERITEM")
-public class OrderItem {
+public class OrderItem implements Serializable {
 
     @TableId(type = IdType.INPUT)
     private int id;

@@ -7,6 +7,9 @@ import com.tianmao.pojo.Property;
 import com.tianmao.pojo.PropertyValue;
 import com.tianmao.service.PropertyService;
 import com.tianmao.service.PropertyValueService;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +21,7 @@ import java.util.List;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
+@CacheConfig(cacheNames="propertyValues")
 public class PropetyValueServiceImpl implements PropertyValueService {
 
     @Resource
@@ -25,6 +29,8 @@ public class PropetyValueServiceImpl implements PropertyValueService {
     
     @Resource
     private PropertyService propertyService;
+
+    @Cacheable(key="'propertyValues-pid-'+ #p0.id")
     @Override
     public List<PropertyValue> list(int id) {
         return propetyValueMapper.list(id);
@@ -46,12 +52,14 @@ public class PropetyValueServiceImpl implements PropertyValueService {
         }
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void update(PropertyValue bean) {
         propetyValueMapper.updateById(bean);
     }
 
 
+    @Cacheable(key="'propertyValues-one-pid-'+#p0.id+ '-ptid-' + #p1.id")
     public PropertyValue getByPropertyAndProduct(Product product, Property property) {
         QueryWrapper<PropertyValue> propertyValueQueryWrapper = new QueryWrapper<>();
         propertyValueQueryWrapper.eq("ptid",property.getId());

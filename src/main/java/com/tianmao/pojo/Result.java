@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * restful返回对象
  * @author 胡建德
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Result {
+public class Result implements Serializable {
     public static int SUCCESS_CODE = 0;
     public static int FAIL_CODE = 1;
 

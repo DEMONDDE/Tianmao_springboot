@@ -16,6 +16,9 @@ import com.tianmao.service.ProductService;
 import com.tianmao.service.ReviewService;
 import oracle.sql.DATE;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,7 @@ import java.util.List;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
+@CacheConfig(cacheNames="products")
 public class ProductServiceImpl implements ProductService {
     @Resource
     private ProductMapper productMapper;
@@ -41,6 +45,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Resource
     private OrderItemService orderItemService;
+
+    @Cacheable(key="'products-cid-'+#p0+'-page-'+#p1 + '-' + #p2 ")
     @Override
     public PageNavigator<Product> list(int start, int size, int num,int id) {
         Page<Product> page = new Page<>(start,size);
@@ -50,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
         return new PageNavigator<Product>(iPage,num);
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void add(Product bean) {
         Date date = new Date(System.currentTimeMillis());
@@ -57,16 +64,19 @@ public class ProductServiceImpl implements ProductService {
         productMapper.add(bean);
     }
 
+    @Cacheable(key="'products-one-'+ #p0")
     @Override
     public Product get(int id) {
         return productMapper.get(id);
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void del(int id) {
         productMapper.deleteById(id);
     }
 
+    @CacheEvict(allEntries=true)
     @Override
     public void update(Product product) {
         productMapper.updateById(product);
@@ -102,6 +112,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @Cacheable(key="'products-cid-'+ #p0.id")
     @Override
     public List<Product> listByCategory(Category category) {
         QueryWrapper<Product> queryWrapper = new QueryWrapper<>();

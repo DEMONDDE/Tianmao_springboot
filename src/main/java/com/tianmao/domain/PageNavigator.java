@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class PageNavigator<T> {
+public class PageNavigator<T> implements Serializable {
     IPage<T> pageFrom;
     int navigatePages;
 

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @author 胡建德
  */
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName("PRODUCTIMAGE")
 @KeySequence("SEQ_PRODUCTIMAGE")
-public class ProductImage {
+public class ProductImage implements Serializable {
 
     @TableId(type = IdType.INPUT)
     private int id;

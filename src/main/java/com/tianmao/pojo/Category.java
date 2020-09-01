@@ -3,6 +3,7 @@ package com.tianmao.pojo;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 @TableName("CATEGORY")
 @KeySequence(value = "seq_category")
-public class Category {
+public class Category implements Serializable {
 
     @TableId(type = IdType.INPUT)
     int id;
