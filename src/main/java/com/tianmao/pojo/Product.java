@@ -2,6 +2,7 @@ package com.tianmao.pojo;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.util.List;
 @Data
 @TableName("PRODUCT")
 @KeySequence(value = "seq_product")
+@Document(indexName = "tmall_springboot",type = "product")
 public class Product implements Serializable {
 
         @TableId(type = IdType.INPUT)

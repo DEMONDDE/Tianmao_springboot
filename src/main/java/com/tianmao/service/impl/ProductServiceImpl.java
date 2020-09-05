@@ -4,21 +4,25 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tianmao.domain.PageNavigator;
-import com.tianmao.mapper.OrderItemMapper;
-import com.tianmao.mapper.OrderMapper;
+import com.tianmao.elasticseachMapper.ProductESMapper;
 import com.tianmao.mapper.ProductMapper;
 import com.tianmao.pojo.Category;
-import com.tianmao.pojo.OrderItem;
 import com.tianmao.pojo.Product;
 import com.tianmao.service.OrderItemService;
 import com.tianmao.service.ProductImageService;
 import com.tianmao.service.ProductService;
 import com.tianmao.service.ReviewService;
-import oracle.sql.DATE;
-import org.apache.ibatis.annotations.Param;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +40,9 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     @Resource
     private ProductMapper productMapper;
+
+    @Resource
+    private ProductESMapper productESMapper;
 
     @Resource
     private ProductImageService productImageService;
@@ -62,6 +69,7 @@ public class ProductServiceImpl implements ProductService {
         Date date = new Date(System.currentTimeMillis());
         bean.setCreateDate(date);
         productMapper.add(bean);
+        productESMapper.save(bean);
     }
 
     @Cacheable(key="'products-one-'+ #p0")
@@ -74,12 +82,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void del(int id) {
         productMapper.deleteById(id);
+        productESMapper.deleteById(id);
     }
 
     @CacheEvict(allEntries=true)
     @Override
     public void update(Product product) {
         productMapper.updateById(product);
+        productESMapper.delete(product);
+        productESMapper.save(product);
     }
 
     @Override
@@ -87,6 +98,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = listByCategory(category);
         productImageService.setFirstProdutImages(products);
         category.setProducts(products);
+
     }
 
     @Override
@@ -142,9 +154,33 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> search(String keyword, int start, int size) {
-        int end = start * size;
-        start = (start-1)*size;
+        initDatabase2ES();
+        FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery()
+                .add(QueryBuilders.matchPhraseQuery("name", keyword),
+                        ScoreFunctionBuilders.weightFactorFunction(100))
+                .scoreMode("sum")
+                .setMinScore(10);
+        Sort sort  = Sort.by(Sort.Direction.DESC,"id");
+        Pageable pageable = PageRequest.of(start, size,sort);
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withPageable(pageable)
+                .withQuery(functionScoreQueryBuilder).build();
+        org.springframework.data.domain.Page<Product> page = productESMapper.search(searchQuery);
+        return page.getContent();
+    }
 
-        return productMapper.search("",start,end);
+    /**
+     * 将数据初始化到ElasticSearch中
+     */
+    private void initDatabase2ES() {
+        Pageable pageable =  PageRequest.of(0, 5);
+        org.springframework.data.domain.Page<Product> page =productESMapper.findAll(pageable);
+        if(page.getContent().isEmpty()) {
+            Iterable<Product> products= productESMapper.findAll();
+            for (Product product : products) {
+                productESMapper.save(product);
+            }
+        }
     }
 }
+
