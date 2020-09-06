@@ -17,6 +17,7 @@ import org.springframework.web.util.HtmlUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -159,7 +160,7 @@ public class ForeRESTController {
      * @return
      */
     @PostMapping("foresearch")
-    public Object searchByname(String keyword){
+    public Object searchByname(String keyword) throws IOException {
         if(keyword == null){
             keyword = "";
         }

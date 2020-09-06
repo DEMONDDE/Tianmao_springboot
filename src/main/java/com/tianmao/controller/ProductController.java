@@ -7,6 +7,7 @@ import com.tianmao.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 
 /**
  * @author 胡建德
@@ -28,7 +29,7 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public Product add(@RequestBody Product bean){
+    public Product add(@RequestBody Product bean) throws IOException {
         productService.add(bean);
         return bean;
     }
@@ -39,13 +40,13 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{id}")
-    public String del(@PathVariable("id") int id){
+    public String del(@PathVariable("id") int id) throws IOException {
         productService.del(id);
         return "";
     }
 
     @PutMapping("/products")
-    public Product update(@RequestBody Product product){
+    public Product update(@RequestBody Product product) throws IOException {
         productService.update(product);
         return product;
     }

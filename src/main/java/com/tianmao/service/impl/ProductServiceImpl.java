@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
 
     @CacheEvict(allEntries=true)
     @Override
-    public void add(Product bean) {
+    public void add(Product bean) throws IOException {
         Date date = new Date(System.currentTimeMillis());
         bean.setCreateDate(date);
         productMapper.add(bean);
@@ -80,14 +81,14 @@ public class ProductServiceImpl implements ProductService {
 
     @CacheEvict(allEntries=true)
     @Override
-    public void del(int id) {
+    public void del(int id) throws IOException {
         productMapper.deleteById(id);
         productESMapper.deleteById(id);
     }
 
     @CacheEvict(allEntries=true)
     @Override
-    public void update(Product product) {
+    public void update(Product product) throws IOException {
         productMapper.updateById(product);
         productESMapper.delete(product);
         productESMapper.save(product);
@@ -153,33 +154,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> search(String keyword, int start, int size) {
+    public List<Product> search(String keyword, int start, int size) throws IOException {
         initDatabase2ES();
-        FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery()
-                .add(QueryBuilders.matchPhraseQuery("name", keyword),
-                        ScoreFunctionBuilders.weightFactorFunction(100))
-                .scoreMode("sum")
-                .setMinScore(10);
-        Sort sort  = Sort.by(Sort.Direction.DESC,"id");
-        Pageable pageable = PageRequest.of(start, size,sort);
-        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withPageable(pageable)
-                .withQuery(functionScoreQueryBuilder).build();
-        org.springframework.data.domain.Page<Product> page = productESMapper.search(searchQuery);
-        return page.getContent();
+        return productESMapper.search( keyword,start,size);
     }
 
     /**
      * 将数据初始化到ElasticSearch中
      */
-    private void initDatabase2ES() {
-        Pageable pageable =  PageRequest.of(0, 5);
-        org.springframework.data.domain.Page<Product> page =productESMapper.findAll(pageable);
-        if(page.getContent().isEmpty()) {
-            Iterable<Product> products= productESMapper.findAll();
-            for (Product product : products) {
-                productESMapper.save(product);
-            }
+    private void initDatabase2ES() throws IOException {
+        if(!productESMapper.isExitData()){
+            List<Product> products = productMapper.selectList(null);
+            productESMapper.saveList(products);
         }
     }
 }

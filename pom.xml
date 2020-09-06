@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <elasticsearch.version>7.9.0</elasticsearch.version>
     </properties>
 
     <dependencies>
@@ -85,7 +86,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-            <version>2.3.2.RELEASE</version>
         </dependency>
         <!-- 用了 elasticsearch 就要加这么一个，不然要com.sun.jna.Native 错误 -->
         <dependency>
@@ -142,6 +142,12 @@
             <artifactId>annotations</artifactId>
             <version>RELEASE</version>
             <scope>compile</scope>
+        </dependency>
+        <!--Json-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.70</version>
         </dependency>
 
     </dependencies>

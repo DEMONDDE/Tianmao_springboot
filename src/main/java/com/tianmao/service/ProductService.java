@@ -4,6 +4,7 @@ import com.tianmao.domain.PageNavigator;
 import com.tianmao.pojo.Category;
 import com.tianmao.pojo.Product;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -12,13 +13,13 @@ import java.util.List;
 public interface ProductService {
     PageNavigator<Product> list(int start, int size, int num,int id);
 
-    void add(Product bean);
+    void add(Product bean) throws IOException;
 
     Product get(int id);
 
-    void del(int id);
+    void del(int id) throws IOException;
 
-    void update(Product product);
+    void update(Product product) throws IOException;
 
     void fill(Category category);
 
@@ -32,5 +33,5 @@ public interface ProductService {
 
     void setSaleAndReviewNumber(List<Product> products);
 
-    List<Product> search(String keyword, int start, int size);
+    List<Product> search(String keyword, int start, int size) throws IOException;
 }

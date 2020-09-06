@@ -15,7 +15,6 @@ import java.util.List;
 @Data
 @TableName("PRODUCT")
 @KeySequence(value = "seq_product")
-@Document(indexName = "tmall_springboot",type = "product")
 public class Product implements Serializable {
 
         @TableId(type = IdType.INPUT)
